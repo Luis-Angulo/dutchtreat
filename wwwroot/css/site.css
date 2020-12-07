@@ -32,3 +32,20 @@ ul.product-props {
 ul.product-props li {
     list-style-type: none;
 }
+
+.product-info {
+    border: 1px solid gray;
+    display: inline-block;
+    padding: 0.5rem 0.2rem;
+    margin-bottom: 0.5rem;
+    width: 30rem;
+    background-color: lightgray;
+    border-radius: 0.5rem;
+}
+
+.product-info img {
+    margin: 0.2rem;
+    float: left;
+    border: 1px solid black;
+    max-width: 15rem;
+}
