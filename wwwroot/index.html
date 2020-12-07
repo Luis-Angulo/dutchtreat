@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <title>Dutch Treat</title>
     <link href="css/site.css" rel="stylesheet" />
+
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="js/index.js" defer ></script>
 </head>
 <body>
     <h2>Dutch Treat</h2>
@@ -17,9 +20,29 @@
             <li>Title: </li>
             <li>Description: Self portrait</li>
         </ul>
-        <button>Buy</button>
+        <button id="buyButton" >Buy</button>
     </div>
-    <div class="theForm">
+
+    <div>
+        <div id="loginToggle">Login</div>
+        <form class="popup-form">
+            <div>
+                <label for="userName">Username</label>
+                <input type="text" name="userName" />
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="text" name="password" />
+            </div>
+            <div>
+                <input type="checkbox" name="remember" />
+                <label for="remember">Remember me?</label>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="theForm" id="myForm">
         <form>
             <label for="name">Your name:</label>
             <br />
