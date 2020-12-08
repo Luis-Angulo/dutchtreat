@@ -1,34 +1,38 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
-<div class="product-info">
-    <img src="~/img/VanGogh.jpg" alt="self portrait of van gogh" />
-    <h3>Mug</h3>
-    <ul class="product-props">
-        <li>Price: $9.99</li>
-        <li>Artist: Van Gogh</li>
-        <li>Title: </li>
-        <li>Description: Self portrait</li>
-    </ul>
-    <button id="buyButton">Buy</button>
-</div>
-
-<div>
-    <div id="loginToggle">Login</div>
-    <form class="popup-form">
-        <div>
-            <label for="userName">Username</label>
-            <input type="text" name="userName" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="product-info">
+            <img src="~/img/VanGogh.jpg" alt="self portrait of van gogh" />
+            <h3>Mug</h3>
+            <ul class="product-props">
+                <li>Price: $9.99</li>
+                <li>Artist: Van Gogh</li>
+                <li>Title: </li>
+                <li>Description: Self portrait</li>
+            </ul>
+            <button id="buyButton" class="btn btn-primary">Buy</button>
         </div>
+    </div>
+    <div class="col-md-6">
         <div>
-            <label for="password">Password</label>
-            <input type="text" name="password" />
+            <div id="loginToggle">Login</div>
+            <form class="popup-form">
+                <div>
+                    <label for="userName">Username</label>
+                    <input type="text" name="userName" />
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="text" name="password" />
+                </div>
+                <div>
+                    <input type="checkbox" name="remember" />
+                    <label for="remember">Remember me?</label>
+                </div>
+                <button type="submit">Login</button>
+            </form>
         </div>
-        <div>
-            <input type="checkbox" name="remember" />
-            <label for="remember">Remember me?</label>
-        </div>
-        <button type="submit">Login</button>
-    </form>
+    </div>
 </div>
