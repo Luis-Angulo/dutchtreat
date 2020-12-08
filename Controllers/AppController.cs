@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using DutchTreat.ViewModels;
 
 namespace DutchTreat.Controllers
 {
@@ -12,9 +13,16 @@ namespace DutchTreat.Controllers
 
         [HttpGet("contact")]
         public IActionResult Contact()
+        {
+            return View();
+        }
+
+        /* The attributes route request verbs to the correct handler 
+         * and method overloading allows sharing the same endpoint.
+         */
+        [HttpPost("contact")]
+        public IActionResult Contact(ContactViewModel formData)
         {   
-            ViewBag.Title = "Contact Us";
-            // throw new System.InvalidOperationException("Some exception dude");
             return View();
         }
 
