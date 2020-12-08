@@ -1,13 +1,5 @@
-﻿// ready does two things
-// it runs the function arg only once the document is done loading
-// it also means that all the code in that function is not sharing the browsers global scope but has its own scope
-$(document).ready(function () {
-    let form = $("#myForm");
-    form.hide();
-
+﻿$(document).ready(function () {
     let buyButton = $("#buyButton");
-    // buyButton.onclick = (e) => alert("clicked");
-    // buyButton.addEventListener("click", (e) => alert("buying item"));
     buyButton.on("click", (e) => console.log("buying item"));
 
     let productInfo = $(".product-props li");
