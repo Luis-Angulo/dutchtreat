@@ -11,6 +11,8 @@ namespace DutchTreat
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // must be added here unlike tutorial says
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -20,6 +22,9 @@ namespace DutchTreat
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            } else
+            {
+                app.UseExceptionHandler("/error");
             }
             app
             .UseStaticFiles()
@@ -33,6 +38,7 @@ namespace DutchTreat
                 "{controller}/{action}/{id?}",
                 // default if no match is found
                 new { controller = "App", action = "Index" });
+                config.MapRazorPages();
             });
         }
     }
