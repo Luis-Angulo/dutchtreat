@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DutchTreat.ViewModels;
 using DutchTreat.Services;
+using DutchTreat.Data;
+using System.Linq;
 
 namespace DutchTreat.Controllers
 {
     public class AppController : Controller
     {
         private readonly IMailService _mailService;
-        public AppController(IMailService mailService)
+        private readonly DutchContext _context;
+        public AppController(IMailService mailService, DutchContext context)
         {
+            _context = context;
             _mailService = mailService;
         }
 
@@ -46,6 +50,16 @@ namespace DutchTreat.Controllers
             ViewBag.Title = "About Us";
             return View();
         }
+
+        public IActionResult Shop()
+        {
+            var resultList = _context.Products
+                .OrderBy(p => p.Category)
+                .ToList();
+            return View(resultList);
+        }
+
+          
 
     }
 }

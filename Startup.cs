@@ -1,13 +1,21 @@
+using DutchTreat.Data;
 using DutchTreat.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DutchTreat
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
         
         public void ConfigureServices(IServiceCollection services)
         {
@@ -15,6 +23,10 @@ namespace DutchTreat
             services.AddControllersWithViews();
             // must be added here unlike tutorial says
             services.AddRazorPages();
+            services.AddDbContext<DutchContext>(builder => {
+                builder.UseSqlServer(_config.GetConnectionString("DutchConnString"));
+                
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
