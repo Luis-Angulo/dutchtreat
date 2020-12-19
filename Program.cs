@@ -1,7 +1,8 @@
+using DutchTreat.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore;
 
 namespace DutchTreat
 {
@@ -9,19 +10,29 @@ namespace DutchTreat
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = BuildWebHost(args);
+            SeedDb(host);
+            host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(SetupConfiguration)
+            .UseStartup<Startup>()
+            .Build();
+
+        private static void SeedDb(IWebHost host)
         {
-            var hb = Host
-                .CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(Setup)
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
-            return hb;
+            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var seeder = scope.ServiceProvider.GetService<DutchSeeder>();
+                seeder.Seed();
+            }
         }
 
-        private static void Setup(HostBuilderContext context, IConfigurationBuilder builder)
+        private static void SetupConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
             builder.Sources.Clear();
             // Last config wins, the second arg is whether the file is optional
