@@ -1,0 +1,12 @@
+{
+  "color": "blue",
+  "ConnectionStrings": {
+    "DutchConnString": "server=LUISDESKTOP\\SQLSERVERDEV;Database=PS.FsDotNet.DutchContext;Integrated Security=true;MultipleActiveResultSets=true"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default":  "Warning"
+    }
+  }
+
+}

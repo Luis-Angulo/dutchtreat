@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DutchTreat.ViewModels;
 using DutchTreat.Services;
+using DutchTreat.Data;
 
 namespace DutchTreat.Controllers
 {
     public class AppController : Controller
     {
         private readonly IMailService _mailService;
-        public AppController(IMailService mailService)
+        private readonly IDutchRepository _repository;
+        public AppController(IMailService mailService, IDutchRepository repository)
         {
+            _repository = repository;
             _mailService = mailService;
         }
 
@@ -46,6 +49,14 @@ namespace DutchTreat.Controllers
             ViewBag.Title = "About Us";
             return View();
         }
+
+        public IActionResult Shop()
+        {
+            var resultList = _repository.GetAllProducts();
+            return View(resultList);
+        }
+
+          
 
     }
 }
