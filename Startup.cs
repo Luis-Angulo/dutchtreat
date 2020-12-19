@@ -21,6 +21,7 @@ namespace DutchTreat
         {
             services.AddTransient<IMailService, NullMailService>();
             services.AddTransient<DutchSeeder>();
+            services.AddScoped<IDutchRepository, DutchRepository>();  // CHeck
             services.AddControllersWithViews();
             // must be added here unlike tutorial says
             services.AddRazorPages();
