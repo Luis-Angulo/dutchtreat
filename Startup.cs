@@ -13,7 +13,8 @@ namespace DutchTreat
     {
         private readonly IConfiguration _config;
         public Startup(IConfiguration config)
-        {
+        { 
+            // port: 5000
             _config = config;
         }
         
