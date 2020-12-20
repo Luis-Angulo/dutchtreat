@@ -11,5 +11,6 @@ namespace DutchTreat.Data
         IEnumerable<Product> GetProductsByCategory(string category);
         Order GetOrderById(int id);
         bool SaveAll();
+        void AddEntity(object data);
     }
 }

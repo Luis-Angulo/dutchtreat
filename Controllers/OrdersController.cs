@@ -59,9 +59,22 @@ namespace DutchTreat.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Post(Order data)
+        public ActionResult Post([FromBody]Order data)
         {
-            return Ok();
+            try
+            {
+                 _repo.AddEntity(data);
+                if(_repo.SaveAll())
+                {
+                    return Created($"http://localhost:5000/api/orders/{data.Id}", data);
+                }
+                return BadRequest("Couldn't save");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return BadRequest("Something went wrong");
+            }
         }
     }
 }
