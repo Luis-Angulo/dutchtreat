@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DutchTreat
 {
@@ -22,13 +23,14 @@ namespace DutchTreat
         {
             services.AddTransient<IMailService, NullMailService>();
             services.AddTransient<DutchSeeder>();
-            services.AddScoped<IDutchRepository, DutchRepository>();  // CHeck
-            services.AddControllersWithViews();
-            // must be added here unlike tutorial says
-            services.AddRazorPages();
+            services.AddScoped<IDutchRepository, DutchRepository>();
+            // This was a PITA. TL;DR: if you're using .net < 5.x upgrate to 5.x, then
+            // add NewtonsoftJson to the packages in the project, then add the config as shown here.
+            services.AddMvc().AddNewtonsoftJson(
+                o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                );
             services.AddDbContext<DutchContext>(builder => {
                 builder.UseSqlServer(_config.GetConnectionString("DutchConnString"));
-                
             });
         }
 
