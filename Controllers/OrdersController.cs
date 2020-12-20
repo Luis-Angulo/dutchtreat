@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DutchTreat.Data;
 using DutchTreat.Data.Entities;
+using DutchTreat.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -59,16 +60,36 @@ namespace DutchTreat.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Post([FromBody]Order data)
+        public ActionResult Post([FromBody] OrderViewModel model)
         {
             try
             {
-                 _repo.AddEntity(data);
-                if(_repo.SaveAll())
+                var order = new Order() {
+                    OrderDate = model.OrderDate,
+                    OrderNumber = model.OrderNumber,
+                    Id = model.OrderId
+                };
+                if (order.OrderDate == DateTime.MinValue)
                 {
-                    return Created($"http://localhost:5000/api/orders/{data.Id}", data);
+                    order.OrderDate = DateTime.Now;
                 }
-                return BadRequest("Couldn't save");
+                 _repo.AddEntity(order);
+                // still hate the modelstate variable
+                if (ModelState.IsValid) {
+                    if (_repo.SaveAll())
+                    {
+                        // return Created($"http://localhost:5000/api/orders/{order.Id}", order);
+                        // This is just to illustrate you should use the viewmodels as DTOs, irl this is stupid
+                        var viewModel = new OrderViewModel() {
+                            OrderDate = order.OrderDate,
+                            OrderNumber = order.OrderNumber,
+                            OrderId = order.Id
+                        };
+                        return Created($"http://localhost:5000/api/orders/{viewModel.OrderId}", viewModel);
+                    }
+                    return BadRequest("Couldn't save");
+                }
+                return BadRequest(ModelState);
             }
             catch (Exception e)
             {
