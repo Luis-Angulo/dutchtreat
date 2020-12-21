@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using AutoMapper;
+using System.Reflection;
 
 namespace DutchTreat
 {
@@ -32,6 +34,8 @@ namespace DutchTreat
             services.AddDbContext<DutchContext>(builder => {
                 builder.UseSqlServer(_config.GetConnectionString("DutchConnString"));
             });
+            // Automapper, ew
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

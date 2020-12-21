@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using DutchTreat.Data;
 using DutchTreat.Data.Entities;
 using DutchTreat.ViewModels;
@@ -16,21 +17,23 @@ namespace DutchTreat.Controllers
     {
         private readonly IDutchRepository _repo;
         private readonly ILogger<OrdersController> _logger;
-        public OrdersController(IDutchRepository repo, ILogger<OrdersController> logger)
+        private readonly IMapper _mapper;
+        public OrdersController(IDutchRepository repo, ILogger<OrdersController> logger, IMapper mapper)
         {
             _repo = repo;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<IEnumerable<Order>> Get()
+        public ActionResult<IEnumerable<OrderViewModel>> Get()
         {
             _logger.LogInformation($"Request - api/orders/get : {HttpContext.Request}");
             try
             {                
-                return Ok(_repo.GetAllOrders());
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders()));
             }
             catch (Exception e)
             {
@@ -41,7 +44,7 @@ namespace DutchTreat.Controllers
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(200)]
-        public ActionResult<Order> Get(int id)
+        public ActionResult<OrderViewModel> Get(int id)
         {
             _logger.LogInformation($"Request - api/orders/get(id) : {HttpContext.Request}");
             try
@@ -49,7 +52,7 @@ namespace DutchTreat.Controllers
                 var order = _repo.GetOrderById(id);
                 if(order != null)
                 {
-                    return Ok(order);
+                    return Ok(_mapper.Map<Order, OrderViewModel>(order));
                 }
                 return NotFound();
             }
@@ -64,28 +67,16 @@ namespace DutchTreat.Controllers
         {
             try
             {
-                var order = new Order() {
-                    OrderDate = model.OrderDate,
-                    OrderNumber = model.OrderNumber,
-                    Id = model.OrderId
-                };
+                var order = _mapper.Map<OrderViewModel, Order>(model);
                 if (order.OrderDate == DateTime.MinValue)
                 {
                     order.OrderDate = DateTime.Now;
                 }
                  _repo.AddEntity(order);
-                // still hate the modelstate variable
                 if (ModelState.IsValid) {
                     if (_repo.SaveAll())
                     {
-                        // return Created($"http://localhost:5000/api/orders/{order.Id}", order);
-                        // This is just to illustrate you should use the viewmodels as DTOs, irl this is stupid
-                        var viewModel = new OrderViewModel() {
-                            OrderDate = order.OrderDate,
-                            OrderNumber = order.OrderNumber,
-                            OrderId = order.Id
-                        };
-                        return Created($"http://localhost:5000/api/orders/{viewModel.OrderId}", viewModel);
+                        return Created($"http://localhost:5000/api/orders/{order.Id}", _mapper.Map<Order, OrderViewModel>(order));
                     }
                     return BadRequest("Couldn't save");
                 }
