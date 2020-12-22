@@ -50,9 +50,10 @@ namespace DutchTreat.Controllers
             try
             {
                 var order = _repo.GetOrderById(id);
-                if(order != null)
+                var ovm = _mapper.Map<Order, OrderViewModel>(order);
+                if (order != null)
                 {
-                    return Ok(_mapper.Map<Order, OrderViewModel>(order));
+                    return Ok(ovm);
                 }
                 return NotFound();
             }

@@ -51,9 +51,10 @@ namespace DutchTreat.Data
                     order.Items = new List<OrderItem>()
                     {
                         new OrderItem()
-                        {   
+                        {
                             Quantity = 5,
-                            UnitPrice = products.First().Price
+                            UnitPrice = products.First().Price,
+                            Product = products.First()
                         }
                     };
                     _context.Orders.Add(order);
