@@ -14,9 +14,10 @@ namespace DutchTreat.Data
             _context = context;
         }
 
-        public IEnumerable<Order> GetAllOrders()
+        public IEnumerable<Order> GetAllOrders(bool includeItems)
         {
-            return _context.Orders.Include(o => o.Items).ToList();
+            var data = includeItems ? _context.Orders.Include(o => o.Items).ToList() : _context.Orders.ToList(); 
+            return data;
         }
 
         public IEnumerable<Product> GetAllProducts()

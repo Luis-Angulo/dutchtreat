@@ -28,12 +28,12 @@ namespace DutchTreat.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<IEnumerable<OrderViewModel>> Get()
+        public ActionResult<IEnumerable<OrderViewModel>> Get(bool includeItems = false)
         {
             _logger.LogInformation($"Request - api/orders/get : {HttpContext.Request}");
             try
             {                
-                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders()));
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders(includeItems)));
             }
             catch (Exception e)
             {
