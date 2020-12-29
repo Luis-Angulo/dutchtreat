@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using AutoMapper;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using DutchTreat.Data.Entities;
 
 namespace DutchTreat
 {
@@ -23,6 +25,10 @@ namespace DutchTreat
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<StoreUser, IdentityRole>(config => {
+                config.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<DutchContext>();
+
             services.AddTransient<IMailService, NullMailService>();
             services.AddTransient<DutchSeeder>();
             services.AddScoped<IDutchRepository, DutchRepository>();
@@ -54,6 +60,8 @@ namespace DutchTreat
             // shortcut from the course, in a real app we should build the npm production dependencies we need, put them in a dist or src folder and serve those as statics
             .UseNodeModules()
             .UseRouting()
+            .UseAuthentication()
+            .UseAuthorization()
             .UseEndpoints(config =>
             {                
                 config.MapControllerRoute("Fallback",
