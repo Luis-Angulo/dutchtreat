@@ -19,7 +19,7 @@ namespace DutchTreat.Data
         readonly ILogger<DutchSeeder> _logger;
         readonly UserManager<StoreUser> _userManager;
 
-        public DutchSeeder(DutchContext context, IHostingEnvironment host, ILogger<DutchSeeder> logger, UserManager<StoreUser> userManager) 
+        public DutchSeeder(DutchContext context, IHostingEnvironment host, ILogger<DutchSeeder> logger, UserManager<StoreUser> userManager)
         {
             _context = context;
             _host = host;
@@ -39,7 +39,7 @@ namespace DutchTreat.Data
                     FirstName = "Pedro",
                     LastName = "Test",
                     Email = "pedro@gmail.com",
-                    UserName = "pedro"
+                    UserName = "pedro@gmail.com"
                 };
 
                 var saveResult = await _userManager.CreateAsync(user, "P@ssw0rd!");

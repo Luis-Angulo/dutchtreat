@@ -4,6 +4,8 @@ using AutoMapper;
 using DutchTreat.Data;
 using DutchTreat.Data.Entities;
 using DutchTreat.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +15,7 @@ namespace DutchTreat.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdersController : ControllerBase
     {
         private readonly IDutchRepository _repo;
@@ -32,7 +35,7 @@ namespace DutchTreat.Controllers
         {
             _logger.LogInformation($"Request - api/orders/get : {HttpContext.Request}");
             try
-            {                
+            {
                 return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders(includeItems)));
             }
             catch (Exception e)
@@ -73,8 +76,9 @@ namespace DutchTreat.Controllers
                 {
                     order.OrderDate = DateTime.Now;
                 }
-                 _repo.AddEntity(order);
-                if (ModelState.IsValid) {
+                _repo.AddEntity(order);
+                if (ModelState.IsValid)
+                {
                     if (_repo.SaveAll())
                     {
                         return Created($"http://localhost:5000/api/orders/{order.Id}", _mapper.Map<Order, OrderViewModel>(order));

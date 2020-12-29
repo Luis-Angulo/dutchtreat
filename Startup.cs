@@ -11,6 +11,8 @@ using AutoMapper;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using DutchTreat.Data.Entities;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DutchTreat
 {
@@ -18,16 +20,27 @@ namespace DutchTreat
     {
         private readonly IConfiguration _config;
         public Startup(IConfiguration config)
-        { 
+        {
             // port: 5000
             _config = config;
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentity<StoreUser, IdentityRole>(config => {
+            services.AddIdentity<StoreUser, IdentityRole>(config =>
+            {
                 config.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<DutchContext>();
+
+            services.AddAuthentication().AddCookie().AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidIssuer = _config["Tokens:Issuer"],
+                    ValidAudience = _config["Tokens:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
+                };
+            });
 
             services.AddTransient<IMailService, NullMailService>();
             services.AddTransient<DutchSeeder>();
@@ -37,7 +50,8 @@ namespace DutchTreat
             services.AddMvc().AddNewtonsoftJson(
                 o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 );
-            services.AddDbContext<DutchContext>(builder => {
+            services.AddDbContext<DutchContext>(builder =>
+            {
                 builder.UseSqlServer(_config.GetConnectionString("DutchConnString"));
             });
             // Automapper, ew
@@ -47,11 +61,12 @@ namespace DutchTreat
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // middleware runs in the order specified here. Order matters.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {   
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            } else
+            }
+            else
             {
                 app.UseExceptionHandler("/error");
             }
@@ -63,7 +78,7 @@ namespace DutchTreat
             .UseAuthentication()
             .UseAuthorization()
             .UseEndpoints(config =>
-            {                
+            {
                 config.MapControllerRoute("Fallback",
                 // pattern for finding controllers and methods by convention
                 "{controller}/{action}/{id?}",
