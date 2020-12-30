@@ -16,7 +16,13 @@ namespace DutchTreat.Data
 
         public IEnumerable<Order> GetAllOrders(bool includeItems)
         {
-            var data = includeItems ? _context.Orders.Include(o => o.Items).ToList() : _context.Orders.ToList(); 
+            var data = includeItems ?
+                _context.Orders
+                    .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                    .ToList() :
+                _context.Orders
+                    .ToList();
             return data;
         }
 
@@ -37,20 +43,32 @@ namespace DutchTreat.Data
             return _context.SaveChanges() > 0;
         }
 
-        public Order GetOrderById(int id)
+        public Order GetOrderById(string userName, int id)
         {
-            // In pinnacle they did something like this but I never understood why
-            // they put this in a map layer and built DTOs for it and made it hard to understand
             return _context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
-                .Where(o => o.Id == id)
+                .Where(o => o.Id == id && o.User.Name == userName)
                 .FirstOrDefault();
         }
 
         public void AddEntity(object data)
         {
             _context.Add(data);
+        }
+
+        public IEnumerable<Order> GetAllOrdersByUser(string userName, bool includeItems)
+        {
+            var data = includeItems ?
+                _context.Orders
+                    .Where(o => o.User.UserName == userName)
+                    .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                    .ToList() :
+                _context.Orders
+                    .Where(o => o.User.UserName == userName)
+                    .ToList();
+            return data;
         }
     }
 }

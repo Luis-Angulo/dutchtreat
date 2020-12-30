@@ -36,7 +36,9 @@ namespace DutchTreat.Controllers
             _logger.LogInformation($"Request - api/orders/get : {HttpContext.Request}");
             try
             {
-                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders(includeItems)));
+                var userName = User.Identity.Name;
+                var userOrders = _repo.GetAllOrdersByUser(userName, includeItems);
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(userOrders));
             }
             catch (Exception e)
             {

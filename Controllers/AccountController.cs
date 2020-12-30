@@ -99,7 +99,7 @@ namespace DutchTreat.Controllers
                             _config["Tokens:Issuer"],
                         _config["Tokens:Issuer"],
                         claims,
-                        expires: DateTime.UtcNow.AddMinutes(30),
+                        expires: DateTime.UtcNow.AddDays(3),
                         signingCredentials: signingCreds
                         );
                         var results = new
