@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using DutchTreat.Data;
 using DutchTreat.Data.Entities;
 using DutchTreat.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,16 +17,25 @@ namespace DutchTreat.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdersController : ControllerBase
     {
         private readonly IDutchRepository _repo;
         private readonly ILogger<OrdersController> _logger;
         private readonly IMapper _mapper;
-        public OrdersController(IDutchRepository repo, ILogger<OrdersController> logger, IMapper mapper)
+        private readonly UserManager<StoreUser> _userManager;
+
+        public OrdersController(
+            IDutchRepository repo,
+            ILogger<OrdersController> logger,
+            IMapper mapper,
+            UserManager<StoreUser> userManager
+            )
         {
             _repo = repo;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -32,8 +45,10 @@ namespace DutchTreat.Controllers
         {
             _logger.LogInformation($"Request - api/orders/get : {HttpContext.Request}");
             try
-            {                
-                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repo.GetAllOrders(includeItems)));
+            {
+                var userName = User.Identity.Name;
+                var userOrders = _repo.GetAllOrdersByUser(userName, includeItems);
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(userOrders));
             }
             catch (Exception e)
             {
@@ -49,7 +64,8 @@ namespace DutchTreat.Controllers
             _logger.LogInformation($"Request - api/orders/get(id) : {HttpContext.Request}");
             try
             {
-                var order = _repo.GetOrderById(id);
+                var userName = User.Identity.Name;
+                var order = _repo.GetOrderById(userName, id);
                 var ovm = _mapper.Map<Order, OrderViewModel>(order);
                 if (order != null)
                 {
@@ -64,7 +80,7 @@ namespace DutchTreat.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Post([FromBody] OrderViewModel model)
+        public async Task<ActionResult> Post([FromBody] OrderViewModel model)
         {
             try
             {
@@ -73,8 +89,11 @@ namespace DutchTreat.Controllers
                 {
                     order.OrderDate = DateTime.Now;
                 }
-                 _repo.AddEntity(order);
-                if (ModelState.IsValid) {
+                var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                order.User = currentUser;
+                _repo.AddEntity(order);
+                if (ModelState.IsValid)
+                {
                     if (_repo.SaveAll())
                     {
                         return Created($"http://localhost:5000/api/orders/{order.Id}", _mapper.Map<Order, OrderViewModel>(order));

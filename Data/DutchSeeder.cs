@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using DutchTreat.Data.Entities;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace DutchTreat.Data
 {
@@ -15,17 +17,37 @@ namespace DutchTreat.Data
         readonly DutchContext _context;
         readonly IHostingEnvironment _host;
         readonly ILogger<DutchSeeder> _logger;
+        readonly UserManager<StoreUser> _userManager;
 
-        public DutchSeeder(DutchContext context, IHostingEnvironment host, ILogger<DutchSeeder> logger) 
+        public DutchSeeder(DutchContext context, IHostingEnvironment host, ILogger<DutchSeeder> logger, UserManager<StoreUser> userManager)
         {
             _context = context;
             _host = host;
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public void Seed()
+        public async Task SeedAsync()
         {
             _context.Database.EnsureCreated();
+
+            var user = await _userManager.FindByEmailAsync("pedro@gmail.com");
+            if (user == null)
+            {
+                user = new StoreUser()
+                {
+                    FirstName = "Pedro",
+                    LastName = "Test",
+                    Email = "pedro@gmail.com",
+                    UserName = "pedro@gmail.com"
+                };
+
+                var saveResult = await _userManager.CreateAsync(user, "P@ssw0rd!");
+                if (saveResult != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Cannot create user in seeder!");
+                }
+            }
 
             if (!_context.Products.Any())
             {
@@ -43,9 +65,10 @@ namespace DutchTreat.Data
                 {
                     _logger.LogWarning("No orders detected, seeding orders");
                     order = new Order()
-                    {   
+                    {
                         OrderDate = DateTime.UtcNow,
-                        OrderNumber = "12345"
+                        OrderNumber = "12345",
+                        User = user
                     };
 
                     order.Items = new List<OrderItem>()

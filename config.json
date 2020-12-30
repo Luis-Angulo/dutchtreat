@@ -1,12 +1,16 @@
 {
-  "color": "blue",
   "ConnectionStrings": {
     "DutchConnString": "server=LUISDESKTOP\\SQLSERVERDEV;Database=PS.FsDotNet.DutchContext;Integrated Security=true;MultipleActiveResultSets=true"
   },
   "Logging": {
     "LogLevel": {
-      "Default":  "Information"
+      "Default": "Information"
     }
+  },
+  "Tokens": {
+    "Key": "mydevkey2347201asokfjaspo832u1;;",
+    "Issuer": "localhost",
+    "Audience": "localhost"
   }
 
 }

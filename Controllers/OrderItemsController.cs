@@ -6,6 +6,8 @@ using DutchTreat.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DutchTreat.Controllers
 {
@@ -15,7 +17,8 @@ namespace DutchTreat.Controllers
     [Route("api/orders/{orderid}/items")]
     [ApiController]
     [Produces("application/json")]
-    public class OrderItemsController: ControllerBase
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class OrderItemsController : ControllerBase
     {
         private readonly ILogger<OrderItemsController> _logger;
         private readonly IDutchRepository _repository;
@@ -33,12 +36,12 @@ namespace DutchTreat.Controllers
         [ProducesResponseType(404)]
         public IActionResult Get(int orderId)
         {
-            // why not query the orderitems directly with the orderId? why query the order? this seems dumb
-                var order = _repository.GetOrderById(orderId);
-                if (order != null)
-                {
-                    return Ok(_mapper.Map<IEnumerable<OrderItem>, IEnumerable<OrderItemViewModel>>(order.Items));
-                }
+            var userName = User.Identity.Name;
+            var order = _repository.GetOrderById(userName, orderId);
+            if (order != null)
+            {
+                return Ok(_mapper.Map<IEnumerable<OrderItem>, IEnumerable<OrderItemViewModel>>(order.Items));
+            }
             return NotFound();
         }
 
@@ -47,12 +50,12 @@ namespace DutchTreat.Controllers
         [ProducesResponseType(404)]
         public IActionResult Get(int orderId, int id)
         {
-            // why not query the orderitems directly with the orderId? why query the order? this seems dumb
-            var order = _repository.GetOrderById(orderId);
+            var userName = User.Identity.Name;
+            var order = _repository.GetOrderById(userName, orderId);
             if (order != null)
             {
                 var item = order.Items.Where(i => i.Id == id).FirstOrDefault();
-                if (item != null) 
+                if (item != null)
                 {
                     return Ok(_mapper.Map<OrderItem, OrderItemViewModel>(item));
                 }
