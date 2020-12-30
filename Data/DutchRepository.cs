@@ -48,7 +48,7 @@ namespace DutchTreat.Data
             return _context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
-                .Where(o => o.Id == id && o.User.Name == userName)
+                .Where(o => o.Id == id && o.User.UserName == userName)
                 .FirstOrDefault();
         }
 
