@@ -1,23 +1,10 @@
 ﻿@model IEnumerable<Product>
-
-<h1>Shop</h1>
-
-<div class="row">
-    @foreach (var p in Model)
-    {
-        <div class="col-md-3">
-            <div class="border bg-light rounded p-1">
-                <img src="~/img/@(p.ArtId).jpg" alt="art picture" class="img-fluid" />
-                <h3>@(p.Category) - @(p.Size)</h3>
-                <ul class="product-props">
-                    <li>Price: $@(p.Price)</li>
-                    <li>Artist: @(p.Artist)</li>
-                    <li>Title: @(p.Title)</li>
-                    <li>Description: @(p.ArtDescription)</li>
-                </ul>
-                <button id="buyButton" class="btn btn-primary">Buy</button>
-            </div>
-
-        </div>
-    }
-</div>
+@section Scripts {
+    <script src="~/clientapp/runtime.js"></script>
+    <script src="~/clientapp/polyfills.js"></script>
+    <script src="~/clientapp/vendor.js"></script>
+    <script src="~/clientapp/main.js"></script>
+}
+<!-- scripts must be included in this order when integrating angular into a server side web app -->
+<!-- The testing password on the db entity is P@ssw0rd! -->
+<app-root></app-root>

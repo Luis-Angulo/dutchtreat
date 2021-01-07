@@ -2,13 +2,41 @@
   "version": "1.0.0",
   "name": "asp.net",
   "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
   "dependencies": {
     "jquery": "3.5.1",
     "jquery-validation": "1.19.2",
     "jquery-validation-unobtrusive": "3.2.11",
     "bootstrap": "4.5.3",
     "popper": "1.0.1",
-    "font-awesome": "4.7.0"
+    "font-awesome": "4.7.0",
+    "@angular/animations": "~11.0.5",
+    "@angular/common": "~11.0.5",
+    "@angular/compiler": "~11.0.5",
+    "@angular/core": "~11.0.5",
+    "@angular/forms": "~11.0.5",
+    "@angular/platform-browser": "~11.0.5",
+    "@angular/platform-browser-dynamic": "~11.0.5",
+    "@angular/router": "~11.0.5",
+    "rxjs": "~6.6.0",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1100.5",
+    "@angular/cli": "~11.0.5",
+    "@angular/compiler-cli": "~11.0.5",
+    "@types/node": "^12.11.1",
+    "codelyzer": "^6.0.0",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "~4.0.2"
+  }
 }
