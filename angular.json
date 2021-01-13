@@ -145,5 +145,8 @@
       }
     }
   },
-  "defaultProject": "dutch-app"
+  "defaultProject": "dutch-app",
+  "cli": {
+    "analytics": "1787496d-c5f7-4cdf-b14f-467060d92a67"
+  }
 }

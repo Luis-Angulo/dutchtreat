@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "Server Build",
             "command": "dotnet",
             "type": "shell",
             "args": [
@@ -19,6 +19,23 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "Client Build",
+            "command": "ng",
+            "type": "shell",
+            "args": [
+                "build"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        // Builds front-back by default, check https://code.visualstudio.com/docs/editor/tasks#_compound-tasks
+        {
+            "label": "build all",
+            "dependsOn": ["Client Build", "Server Build"]
+          }
     ]
 }
