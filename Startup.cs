@@ -52,7 +52,8 @@ namespace DutchTreat
                 );
             services.AddDbContext<DutchContext>(builder =>
             {
-                builder.UseSqlServer(_config.GetConnectionString("DutchConnString"));
+                
+                builder.UseSqlite(_config.GetConnectionString("DutchConnString"));
             });
             // Automapper, ew
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

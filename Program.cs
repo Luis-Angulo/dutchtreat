@@ -34,9 +34,10 @@ namespace DutchTreat
 
         private static void SetupConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
+            var configJsonPath = "config.json";
             builder.Sources.Clear();
             // Last config wins, the second arg is whether the file is optional
-            builder.AddJsonFile("D:\\vsprojects\\DutchTreat\\config.json", false, true)
+            builder.AddJsonFile(configJsonPath, false, true)
                 .AddXmlFile("config.xml", true)
                 .AddEnvironmentVariables();
         }

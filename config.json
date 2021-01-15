@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DutchConnString": "server=LUISDESKTOP\\SQLSERVERDEV;Database=PS.FsDotNet.DutchContext;Integrated Security=true;MultipleActiveResultSets=true"
+    "DutchConnString": "Data Source=DBFileName.db"
   },
   "Logging": {
     "LogLevel": {
